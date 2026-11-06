@@ -72,11 +72,11 @@ function findMermaidBlocks(text) {
 // src/resize.ts
 function attachSplitResizing(root, measure) {
   const doc = root.ownerDocument;
-  const divider = doc.createElement("div");
+  const divider = root.createEl("div");
   divider.className = "mls-divider";
   divider.setAttribute("aria-label", "\u8C03\u6574\u6E90\u7801\u4E0E\u9884\u89C8\u5BBD\u5EA6");
   divider.title = "\u62D6\u52A8\u8C03\u6574\u5DE6\u53F3\u5BBD\u5EA6\uFF0C\u53CC\u51FB\u6062\u590D\u5747\u5206";
-  const heightHandle = doc.createElement("div");
+  const heightHandle = root.createEl("div");
   heightHandle.className = "mls-height-handle";
   heightHandle.setAttribute("aria-label", "\u8C03\u6574\u53CC\u680F\u9AD8\u5EA6");
   heightHandle.title = "\u62D6\u52A8\u8C03\u6574\u9AD8\u5EA6\uFF0C\u53CC\u51FB\u6062\u590D\u9ED8\u8BA4\u9AD8\u5EA6";
@@ -191,7 +191,7 @@ var SplitWidget = class extends import_view.WidgetType {
     return this.block.from === other.block.from && this.block.to === other.block.to && this.block.code === other.block.code;
   }
   toDOM(host) {
-    const root = host.dom.ownerDocument.createElement("div");
+    const root = host.dom.ownerDocument.createDocumentFragment().createEl("div");
     root.className = "mermaid-live-split";
     const controller = new SplitController(root, host, this.block, this.options);
     controllers.set(root, controller);
@@ -218,17 +218,18 @@ var SplitController = class {
     this.host = host;
     this.block = block;
     this.options = options;
-    const source = root.appendChild(root.ownerDocument.createElement("section"));
+    this.window = root.ownerDocument.defaultView ?? window;
+    const source = root.createEl("section");
     source.className = "mls-source";
-    const label = source.appendChild(root.ownerDocument.createElement("div"));
+    const label = source.createEl("div");
     label.className = "mls-label";
     label.textContent = "Mermaid \u6E90\u7801";
-    const right = root.appendChild(root.ownerDocument.createElement("section"));
+    const right = root.createEl("section");
     right.className = "mls-right";
-    this.status = right.appendChild(root.ownerDocument.createElement("div"));
+    this.status = right.createEl("div");
     this.status.className = "mls-label";
     this.status.textContent = "\u5B9E\u65F6\u9884\u89C8";
-    this.preview = right.appendChild(root.ownerDocument.createElement("div"));
+    this.preview = right.createEl("div");
     this.preview.className = "mls-preview";
     this.preview.setAttribute("aria-label", "Mermaid \u56FE\u8868\u9884\u89C8");
     this.editor = new import_view.EditorView({
@@ -284,6 +285,7 @@ var SplitController = class {
   preview;
   status;
   timer;
+  window;
   version = 0;
   cleanup;
   dead = false;
@@ -302,18 +304,16 @@ var SplitController = class {
     }
   }
   schedule() {
-    clearTimeout(this.timer);
+    this.window.clearTimeout(this.timer);
     const version = ++this.version;
     this.status.textContent = "\u5B9E\u65F6\u9884\u89C8 \xB7 \u66F4\u65B0\u4E2D";
-    this.timer = setTimeout(() => {
+    this.timer = this.window.setTimeout(() => {
       void this.render(version);
     }, 250);
   }
   async render(version) {
-    const stage = this.root.ownerDocument.createElement("div");
-    stage.className = "mls-render";
-    stage.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;inset:0;";
-    this.preview.appendChild(stage);
+    const stage = this.preview.createEl("div");
+    stage.className = "mls-render mls-staging";
     try {
       const cleanup = await this.options.render(this.block.code, stage, this.host);
       if (this.dead || version !== this.version) {
@@ -323,7 +323,7 @@ var SplitController = class {
       }
       this.cleanup?.();
       this.cleanup = cleanup;
-      stage.removeAttribute("style");
+      stage.classList.remove("mls-staging");
       this.preview.replaceChildren(stage);
       this.status.textContent = "\u5B9E\u65F6\u9884\u89C8";
       this.preview.classList.remove("mls-error");
@@ -332,7 +332,7 @@ var SplitController = class {
       if (this.dead || version !== this.version) return;
       this.cleanup?.();
       this.cleanup = void 0;
-      const message = this.root.ownerDocument.createElement("pre");
+      const message = this.preview.createEl("pre");
       message.textContent = error instanceof Error ? error.message : String(error);
       this.preview.replaceChildren(message);
       this.preview.classList.add("mls-error");
@@ -343,7 +343,7 @@ var SplitController = class {
   destroy() {
     this.dead = true;
     this.version++;
-    clearTimeout(this.timer);
+    this.window.clearTimeout(this.timer);
     this.disposeResizing();
     this.cleanup?.();
     this.editor.destroy();

@@ -1,7 +1,7 @@
 {
   "id": "mermaid-live-split",
   "name": "Mermaid Live Split",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "minAppVersion": "1.15.0",
   "description": "Edit Mermaid source beside a live diagram preview, with resizable panes in Live Preview mode.",
   "author": "赵梁zifiii",

@@ -16,7 +16,7 @@ class SplitWidget extends WidgetType {
     return this.block.from === other.block.from && this.block.to === other.block.to && this.block.code === other.block.code;
   }
   toDOM(host: EditorView): HTMLElement {
-    const root = host.dom.ownerDocument.createElement('div');
+    const root = host.dom.ownerDocument.createDocumentFragment().createEl('div');
     root.className = 'mermaid-live-split';
     const controller = new SplitController(root, host, this.block, this.options);
     controllers.set(root, controller);
@@ -37,24 +37,26 @@ class SplitController {
   private editor: EditorView;
   private preview: HTMLElement;
   private status: HTMLElement;
-  private timer: ReturnType<typeof setTimeout> | undefined;
+  private timer: number | undefined;
+  private window: Window;
   private version = 0;
   private cleanup: (() => void) | undefined;
   private dead = false;
   private syncing = false;
   private disposeResizing: () => void;
   constructor(private root: HTMLElement, private host: EditorView, private block: MermaidBlock, private options: SplitOptions) {
-    const source = root.appendChild(root.ownerDocument.createElement('section'));
+    this.window = root.ownerDocument.defaultView ?? window;
+    const source = root.createEl('section');
     source.className = 'mls-source';
-    const label = source.appendChild(root.ownerDocument.createElement('div'));
+    const label = source.createEl('div');
     label.className = 'mls-label';
     label.textContent = 'Mermaid 源码';
-    const right = root.appendChild(root.ownerDocument.createElement('section'));
+    const right = root.createEl('section');
     right.className = 'mls-right';
-    this.status = right.appendChild(root.ownerDocument.createElement('div'));
+    this.status = right.createEl('div');
     this.status.className = 'mls-label';
     this.status.textContent = '实时预览';
-    this.preview = right.appendChild(root.ownerDocument.createElement('div'));
+    this.preview = right.createEl('div');
     this.preview.className = 'mls-preview';
     this.preview.setAttribute('aria-label', 'Mermaid 图表预览');
     this.editor = new EditorView({
@@ -114,23 +116,22 @@ class SplitController {
     }
   }
   private schedule(): void {
-    clearTimeout(this.timer);
+    this.window.clearTimeout(this.timer);
     const version = ++this.version;
     this.status.textContent = '实时预览 · 更新中';
-    this.timer = setTimeout(() => { void this.render(version); }, 250);
+    this.timer = this.window.setTimeout(() => { void this.render(version); }, 250);
   }
   private async render(version: number): Promise<void> {
-    const stage = this.root.ownerDocument.createElement('div');
-    stage.className = 'mls-render';
+    const stage = this.preview.createEl('div');
+    stage.className = 'mls-render mls-staging';
     // Mermaid measures SVG text; render in an attached, invisible staging element.
-    stage.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;inset:0;';
-    this.preview.appendChild(stage);
+
     try {
       const cleanup = await this.options.render(this.block.code, stage, this.host);
       if (this.dead || version !== this.version) { cleanup(); stage.remove(); return; }
       this.cleanup?.();
       this.cleanup = cleanup;
-      stage.removeAttribute('style');
+      stage.classList.remove('mls-staging');
       this.preview.replaceChildren(stage);
       this.status.textContent = '实时预览';
       this.preview.classList.remove('mls-error');
@@ -138,7 +139,7 @@ class SplitController {
       stage.remove();
       if (this.dead || version !== this.version) return;
       this.cleanup?.(); this.cleanup = undefined;
-      const message = this.root.ownerDocument.createElement('pre');
+      const message = this.preview.createEl('pre');
       message.textContent = error instanceof Error ? error.message : String(error);
       this.preview.replaceChildren(message);
       this.preview.classList.add('mls-error');
@@ -148,7 +149,7 @@ class SplitController {
   }
   destroy(): void {
     this.dead = true; this.version++;
-    clearTimeout(this.timer);
+    this.window.clearTimeout(this.timer);
     this.disposeResizing(); this.cleanup?.(); this.editor.destroy();
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "mermaid-live-split",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "private": true,
   "scripts": {
     "build": "esbuild src/main.ts --bundle --platform=node --format=cjs --external:obsidian --external:@codemirror/* --outfile=main.js",

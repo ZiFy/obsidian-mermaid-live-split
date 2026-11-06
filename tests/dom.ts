@@ -12,4 +12,12 @@ Object.defineProperty(globalThis, 'cancelAnimationFrame', { configurable: true, 
 // jsdom has no layout engine; CodeMirror only needs valid, finite measurements.
 window.Range.prototype.getBoundingClientRect = () => new window.DOMRect(0, 0, 0, 0);
 window.Range.prototype.getClientRects = () => Object.assign([], { item: () => null });
+// Obsidian installs createEl on elements and document fragments at runtime.
+function createEl(this: Node, tag: string): HTMLElement {
+  const el = this.ownerDocument!.createElement(tag);
+  this.appendChild(el);
+  return el;
+}
+Object.defineProperty(window.HTMLElement.prototype, 'createEl', { value: createEl });
+Object.defineProperty(window.DocumentFragment.prototype, 'createEl', { value: createEl });
 export { dom };

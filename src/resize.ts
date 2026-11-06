@@ -1,11 +1,11 @@
 /** Keep widget dimensions local to the view; resizing must never edit the note. */
 export function attachSplitResizing(root: HTMLElement, measure: () => void): () => void {
   const doc = root.ownerDocument;
-  const divider = doc.createElement('div');
+  const divider = root.createEl('div');
   divider.className = 'mls-divider';
   divider.setAttribute('aria-label', '调整源码与预览宽度');
   divider.title = '拖动调整左右宽度，双击恢复均分';
-  const heightHandle = doc.createElement('div');
+  const heightHandle = root.createEl('div');
   heightHandle.className = 'mls-height-handle';
   heightHandle.setAttribute('aria-label', '调整双栏高度');
   heightHandle.title = '拖动调整高度，双击恢复默认高度';

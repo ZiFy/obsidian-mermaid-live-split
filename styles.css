@@ -40,6 +40,7 @@
 .mermaid-live-split .mls-source:focus-within { box-shadow: inset 2px 0 var(--interactive-accent); }
 .mermaid-live-split .mls-preview { position: relative; flex: 1 1 0; min-height: 0; overflow: auto; }
 .mermaid-live-split .mls-render { width: 100%; height: 100%; min-height: 0; }
+.mermaid-live-split .mls-render.mls-staging { position: absolute; visibility: hidden; pointer-events: none; inset: 0; }
 .mermaid-live-split .mls-render > .mermaid { width: 100%; height: 100%; min-height: 0; margin: 0; }
 /* Target the diagram only; the native zoom toolbar also contains SVG icons. */
 .mermaid-live-split .mls-render .mermaid > svg { display: block; max-width: 100%; margin: auto; }
@@ -50,5 +51,5 @@
 .mermaid-live-split .mls-divider, .mermaid-live-split .mls-height-handle { touch-action: none; user-select: none; }
 .mermaid-live-split .mls-divider:hover, .mermaid-live-split .mls-height-handle:hover,
 .mermaid-live-split .mls-divider:focus-visible, .mermaid-live-split .mls-height-handle:focus-visible { background: var(--interactive-accent); outline: none; }
-.mermaid-live-split.mls-resizing-columns, .mermaid-live-split.mls-resizing-columns * { cursor: col-resize !important; user-select: none !important; }
-.mermaid-live-split.mls-resizing-height, .mermaid-live-split.mls-resizing-height * { cursor: row-resize !important; user-select: none !important; }
+.markdown-source-view.mod-cm6 .mermaid-live-split.mls-resizing-columns, .markdown-source-view.mod-cm6 .mermaid-live-split.mls-resizing-columns * { cursor: col-resize; user-select: none; }
+.markdown-source-view.mod-cm6 .mermaid-live-split.mls-resizing-height, .markdown-source-view.mod-cm6 .mermaid-live-split.mls-resizing-height * { cursor: row-resize; user-select: none; }

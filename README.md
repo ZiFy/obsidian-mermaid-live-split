@@ -4,7 +4,7 @@
 
 Edit Mermaid source beside a native live diagram preview in Obsidian Live Preview. Source mode and Reading view retain their standard behavior.
 
-作者 / Author: **赵梁zifiii** · 版本 / Version: **0.16.0** · 许可证 / License: **MIT**
+作者 / Author: **赵梁zifiii** · 版本 / Version: **0.16.1** · 许可证 / License: **MIT**
 
 ## 环境要求 / Requirements
 
