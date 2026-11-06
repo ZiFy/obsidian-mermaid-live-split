@@ -1,0 +1,28 @@
+{
+  "name": "mermaid-live-split",
+  "version": "0.16.0",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --platform=node --format=cjs --external:obsidian --external:@codemirror/* --outfile=main.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.8.0",
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/language": "^6.11.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.38.0",
+    "@types/jsdom": "^21.1.0",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.0.0",
+    "jsdom": "^26.0.0",
+    "mermaid": "^12.3.0",
+    "obsidian": "latest",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}

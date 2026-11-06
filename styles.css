@@ -1,0 +1,54 @@
+.mermaid-live-split {
+  display: grid;
+  grid-template-columns: minmax(0, var(--mls-source-fr, 1fr)) 6px minmax(0, var(--mls-preview-fr, 1fr));
+  grid-template-rows: minmax(0, 1fr) 10px;
+  width: 100%;
+  height: var(--mls-height, 440px);
+  min-height: 240px;
+  margin: 12px 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: var(--font-text-size);
+  box-sizing: border-box;
+}
+/* Override Obsidian's direct .cm-content children display:block rule. */
+.markdown-source-view.mod-cm6 .cm-content > .mermaid-live-split { display: grid; }
+.mermaid-live-split > section { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
+.mermaid-live-split .mls-label {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  font: 12px var(--font-interface);
+  user-select: none;
+}
+.mermaid-live-split .mls-source > .cm-editor { background: transparent; flex: 1 1 0; min-height: 0; overflow: hidden; }
+.mermaid-live-split .mls-source .cm-scroller {
+  font: var(--code-size) var(--font-monospace);
+  line-height: 1.6;
+  height: 100%;
+  overflow: auto;
+}
+.mermaid-live-split .mls-source .cm-content { padding: 10px 0; min-height: 100%; }
+.mermaid-live-split .mls-source .cm-line { padding: 0 12px 0 8px; }
+.mermaid-live-split .mls-source .cm-gutters { background: var(--background-primary); border: 0; color: var(--text-faint); }
+.mermaid-live-split .mls-source .cm-focused { outline: none; }
+.mermaid-live-split .mls-source:focus-within { box-shadow: inset 2px 0 var(--interactive-accent); }
+.mermaid-live-split .mls-preview { position: relative; flex: 1 1 0; min-height: 0; overflow: auto; }
+.mermaid-live-split .mls-render { width: 100%; height: 100%; min-height: 0; }
+.mermaid-live-split .mls-render > .mermaid { width: 100%; height: 100%; min-height: 0; margin: 0; }
+/* Target the diagram only; the native zoom toolbar also contains SVG icons. */
+.mermaid-live-split .mls-render .mermaid > svg { display: block; max-width: 100%; margin: auto; }
+.mermaid-live-split .mls-error pre { color: var(--text-error); white-space: pre-wrap; padding: 16px; font: 12px var(--font-monospace); }
+.mermaid-live-split .mls-divider { cursor: col-resize; background: var(--background-secondary); border-inline: 1px solid var(--background-modifier-border); }
+.mermaid-live-split .mls-height-handle { grid-column: 1 / -1; cursor: row-resize; border-top: 1px solid var(--background-modifier-border); background: var(--background-secondary); }
+.mermaid-live-split .mls-height-handle::after { content: ''; display: block; width: 36px; height: 2px; margin: 3px auto; border-radius: 2px; background: var(--text-faint); }
+.mermaid-live-split .mls-divider, .mermaid-live-split .mls-height-handle { touch-action: none; user-select: none; }
+.mermaid-live-split .mls-divider:hover, .mermaid-live-split .mls-height-handle:hover,
+.mermaid-live-split .mls-divider:focus-visible, .mermaid-live-split .mls-height-handle:focus-visible { background: var(--interactive-accent); outline: none; }
+.mermaid-live-split.mls-resizing-columns, .mermaid-live-split.mls-resizing-columns * { cursor: col-resize !important; user-select: none !important; }
+.mermaid-live-split.mls-resizing-height, .mermaid-live-split.mls-resizing-height * { cursor: row-resize !important; user-select: none !important; }
